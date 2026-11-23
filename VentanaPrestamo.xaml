@@ -1,0 +1,150 @@
+<Window x:Class="PrestamosGC.VentanaPrestamo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nuevo préstamo"
+        Width="620" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Language="es-ES"
+        Loaded="Window_Loaded">
+
+    <!-- el orden del Tab ya es el de la figura, no hace falta tocar TabIndex -->
+    <StackPanel Margin="20,16,8,16">
+
+        <!-- cabecera -->
+        <TextBlock Style="{StaticResource Titulo}" Text="Nuevo préstamo"/>
+        <TextBlock Style="{StaticResource Subtitulo}" Text="Rellena los datos del alumno y del portátil"/>
+
+        <!-- formulario -->
+        <!-- dos columnas iguales, cada campo lleva etiqueta, control y mensaje de error -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- nombre y apellidos -->
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <TextBlock Style="{StaticResource Etiqueta}" Text="Nombre"/>
+                <TextBox x:Name="txtNombre" TextChanged="Campo_Cambiado"/>
+                <TextBlock x:Name="errNombre" Style="{StaticResource MensajeError}"
+                           Text="Campo obligatorio."/>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <TextBlock Style="{StaticResource Etiqueta}" Text="Apellidos"/>
+                <TextBox x:Name="txtApellidos" TextChanged="Campo_Cambiado"/>
+                <TextBlock x:Name="errApellidos" Style="{StaticResource MensajeError}"
+                           Text="Campo obligatorio."/>
+            </StackPanel>
+
+            <!-- grupo y correo -->
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <TextBlock Style="{StaticResource Etiqueta}" Text="Grupo"/>
+                <ComboBox x:Name="cmbGrupo" SelectionChanged="Campo_Cambiado">
+                    <ComboBoxItem Content="1º DAM"/>
+                    <ComboBoxItem Content="2º DAM"/>
+                    <ComboBoxItem Content="1º DAW"/>
+                    <ComboBoxItem Content="2º DAW"/>
+                    <ComboBoxItem Content="1º ASIR"/>
+                    <ComboBoxItem Content="2º ASIR"/>
+                </ComboBox>
+                <TextBlock x:Name="errGrupo" Style="{StaticResource MensajeError}"
+                           Text="Elige un grupo."/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1">
+                <TextBlock Style="{StaticResource Etiqueta}" Text="Correo del centro"/>
+                <TextBox x:Name="txtCorreo" TextChanged="Campo_Cambiado"/>
+                <TextBlock x:Name="errCorreo" Style="{StaticResource MensajeError}"
+                           Text="Usa el correo del centro (@g.educaand.es)."/>
+            </StackPanel>
+
+            <!-- portátil y motivo -->
+            <StackPanel Grid.Row="2" Grid.Column="0">
+                <TextBlock Style="{StaticResource Etiqueta}" Text="Portátil"/>
+                <!-- vacío, se rellena desde el código -->
+                <ComboBox x:Name="cmbPortatil" SelectionChanged="Campo_Cambiado"/>
+                <TextBlock x:Name="errPortatil" Style="{StaticResource MensajeError}"
+                           Text="Elige un portátil."/>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Grid.Column="1">
+                <TextBlock Style="{StaticResource Etiqueta}" Text="Motivo"/>
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <!-- ninguno marcado al abrir -->
+                    <RadioButton x:Name="rbProyecto" Content="Proyecto" GroupName="Motivo"
+                                 Margin="0,0,16,0" Checked="Motivo_Checked"/>
+                    <RadioButton x:Name="rbPracticas" Content="Prácticas" GroupName="Motivo"
+                                 Margin="0,0,16,0" Checked="Motivo_Checked"/>
+                    <RadioButton x:Name="rbOtro" Content="Otro" GroupName="Motivo"
+                                 Checked="Motivo_Checked"/>
+                </StackPanel>
+                <TextBlock x:Name="errMotivo" Style="{StaticResource MensajeError}"
+                           Text="Elige un motivo."/>
+            </StackPanel>
+
+            <!-- fechas -->
+            <StackPanel Grid.Row="3" Grid.Column="0">
+                <TextBlock Style="{StaticResource Etiqueta}" Text="Fecha de préstamo"/>
+                <DatePicker x:Name="dpPrestamo" SelectedDateChanged="FechaPrestamo_Changed"/>
+                <TextBlock x:Name="errFechaPrestamo" Style="{StaticResource MensajeError}"
+                           Text="La fecha no puede ser anterior a hoy."/>
+            </StackPanel>
+            <StackPanel Grid.Row="3" Grid.Column="1">
+                <TextBlock Style="{StaticResource Etiqueta}" Text="Fecha de devolución"/>
+                <DatePicker x:Name="dpDevolucion" SelectedDateChanged="Campo_Cambiado"/>
+                <TextBlock x:Name="errFechaDevolucion" Style="{StaticResource MensajeError}"
+                           Text="El préstamo dura entre 1 y 14 días."/>
+            </StackPanel>
+
+            <!-- cargador (dos columnas) -->
+            <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+                      x:Name="chkCargador" Content="Incluye cargador"
+                      IsChecked="True" Margin="0,12,0,0"/>
+
+            <!-- observaciones y contador (dos columnas) -->
+            <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2">
+                <TextBlock x:Name="lblObservaciones" Style="{StaticResource Etiqueta}"
+                           Text="Observaciones"/>
+                <TextBox x:Name="txtObservaciones" Height="64"
+                         AcceptsReturn="True" TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top"
+                         MaxLength="200" TextChanged="Observaciones_TextChanged"/>
+                <TextBlock x:Name="txtContador" Text="0/200" HorizontalAlignment="Right"
+                           Margin="0,2,12,0"
+                           Foreground="{StaticResource ColorTextoSecundario}"/>
+                <TextBlock x:Name="errObservaciones" Style="{StaticResource MensajeError}"
+                           Text="Explica el motivo del préstamo."/>
+            </StackPanel>
+
+            <!-- normas de uso (dos columnas) -->
+            <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2">
+                <CheckBox x:Name="chkNormas" Margin="0,12,0,0"
+                          Content="El alumno conoce y acepta las normas de uso de los portátiles"
+                          Checked="Campo_Cambiado" Unchecked="Campo_Cambiado"/>
+                <TextBlock x:Name="errNormas" Style="{StaticResource MensajeError}"
+                           Text="El alumno debe aceptar las normas."/>
+            </StackPanel>
+        </Grid>
+
+        <!-- error general y botones -->
+        <!-- aquí sale el error si el gestor no deja guardar -->
+        <TextBlock x:Name="txtErrorGeneral" Style="{StaticResource MensajeError}"
+                   Margin="0,12,12,0"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,12,0">
+            <Button Content="Cancelar" Style="{StaticResource BotonSecundario}"
+                    IsCancel="True"/>
+            <Button Content="Registrar préstamo" Style="{StaticResource BotonPrincipal}"
+                    IsDefault="True" Click="Registrar_Click"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

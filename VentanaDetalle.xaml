@@ -1,0 +1,108 @@
+<Window x:Class="PrestamosGC.VentanaDetalle"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Detalle del préstamo"
+        Width="520" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Language="es-ES">
+    <!-- con Language es-ES la fecha larga sale en español -->
+
+    <StackPanel Margin="20,16,20,16">
+
+        <!-- cabecera -->
+        <StackPanel Orientation="Horizontal">
+            <!-- círculo con el código del portátil -->
+            <Border Style="{StaticResource Insignia}">
+                <TextBlock Text="{Binding Portatil}" FontWeight="Bold"
+                           Foreground="{StaticResource ColorTextoClaro}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+
+            <StackPanel VerticalAlignment="Center" Margin="12,0,0,0">
+                <TextBlock Style="{StaticResource Titulo}" Text="{Binding NombreCompleto}"/>
+
+                <!-- grupo · estado con tres Run. Estado es solo lectura, por eso lleva Mode=OneWay -->
+                <TextBlock Style="{StaticResource Subtitulo}">
+                    <Run Text="{Binding Grupo}"/>
+                    <Run Text=" · "/>
+                    <Run Text="{Binding Estado, Mode=OneWay}"/>
+                </TextBlock>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- datos del préstamo -->
+        <Border Style="{StaticResource Tarjeta}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource EtiquetaDetalle}" Text="Correo"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource ValorDetalle}"
+                           Text="{Binding Correo}"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource EtiquetaDetalle}" Text="Motivo"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource ValorDetalle}"
+                           Text="{Binding Motivo}"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource EtiquetaDetalle}" Text="Incluye cargador"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource ValorDetalle}"
+                           Text="{Binding CargadorTexto}"/>
+
+                <!-- fecha en día/mes/año -->
+                <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource EtiquetaDetalle}" Text="Fecha de préstamo"/>
+                <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource ValorDetalle}"
+                           Text="{Binding FechaPrestamo, StringFormat={}{0:dd/MM/yyyy}}"/>
+
+                <!-- fecha larga: día, mes y año en letra -->
+                <TextBlock Grid.Row="4" Grid.Column="0" Style="{StaticResource EtiquetaDetalle}" Text="Devolución prevista"/>
+                <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource ValorDetalle}"
+                           Text="{Binding FechaDevolucionPrevista, StringFormat={}{0:D}}"/>
+
+                <TextBlock Grid.Row="5" Grid.Column="0" Style="{StaticResource EtiquetaDetalle}" Text="Duración"/>
+                <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource ValorDetalle}"
+                           Text="{Binding DuracionDias, StringFormat='{}{0} días'}"/>
+
+                <TextBlock Grid.Row="6" Grid.Column="0" Style="{StaticResource EtiquetaDetalle}" Text="Plazo"/>
+                <TextBlock Grid.Row="6" Grid.Column="1" Style="{StaticResource ValorDetalle}"
+                           Text="{Binding Plazo}"/>
+
+                <!-- si las observaciones están vacías ponemos un guion con un DataTrigger -->
+                <TextBlock Grid.Row="7" Grid.Column="0" Style="{StaticResource EtiquetaDetalle}" Text="Observaciones"/>
+                <TextBlock Grid.Row="7" Grid.Column="1">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource ValorDetalle}">
+                            <Setter Property="Text" Value="{Binding Observaciones}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Observaciones}" Value="">
+                                    <Setter Property="Text" Value="—"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+        </Border>
+
+        <!-- botones -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Cerrar" Style="{StaticResource BotonSecundario}" IsCancel="True"/>
+            <!-- solo activo si no se ha devuelto -->
+            <Button Content="Registrar devolución" Style="{StaticResource BotonPrincipal}"
+                    IsEnabled="{Binding EstaActivo}" Click="RegistrarDevolucion_Click"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
